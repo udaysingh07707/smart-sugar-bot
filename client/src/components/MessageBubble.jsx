@@ -14,12 +14,12 @@ const MessageBubble = ({ message }) => {
       <div
         className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-md ${
           isUser
-            ? "rounded-br-md bg-brand-500/90 text-slate-950"
-            : "rounded-bl-md border border-slate-300 bg-slate-100/90 text-slate-800 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100"
+            ? "bg-[var(--bg-bubble-user)] text-[var(--accent-contrast)] rounded-br-md"
+            : "bg-[var(--bg-bubble-bot)] text-[var(--text-primary)] rounded-bl-md border border-[var(--bg-divider)]"
         }`}
       >
         <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
-        <p className={`mt-2 text-[11px] ${isUser ? "text-slate-900/80" : "text-slate-500 dark:text-slate-500"}`}>
+        <p className={`mt-2 text-[11px] ${isUser ? "text-[var(--accent-contrast)]/70" : "text-[var(--text-muted)]"}`}>
           {formatMessageTime(message.timestamp)}
         </p>
       </div>

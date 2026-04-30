@@ -7,7 +7,7 @@ A full-stack chatbot app that helps users track blood sugar readings, save chat 
 - Frontend: React + Vite + Tailwind CSS + Chart.js
 - Backend: Node.js + Express
 - Database: MongoDB + Mongoose
-- AI: OpenAI API (with fallback rule-based responses if API key is missing)
+- AI: SkillBoss Chat Completions API (with fallback rule-based responses if API key is missing)
 - Auth: JWT
 
 ## Folder Structure
@@ -95,8 +95,9 @@ PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/blood_sugar_chatbot
 JWT_SECRET=replace-with-a-strong-secret
 CLIENT_ORIGIN=http://localhost:5173
-OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-4.1-mini
+SKILLBOSS_API_KEY=your_skillboss_api_key
+SKILLBOSS_MODEL=openrouter/google/gemini-2.5-flash
+SKILLBOSS_BASE_URL=https://api.skillboss.co/v1
 ```
 
 Install and run backend:
@@ -130,5 +131,5 @@ Open: `http://localhost:5173`
 
 ## Notes
 
-- If `OPENAI_API_KEY` is empty, chat still works using a rule-based fallback.
+- If `SKILLBOSS_API_KEY` is empty, chat still works using a rule-based fallback.
 - This app provides educational wellness support only and is not a medical diagnosis tool.

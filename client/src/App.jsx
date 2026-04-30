@@ -230,7 +230,7 @@ const App = () => {
   };
 
   if (loadingAuth) {
-    return <div className="flex min-h-screen items-center justify-center bg-slate-100 text-slate-700 dark:bg-slate-950 dark:text-slate-200">Loading...</div>;
+    return <div className="flex min-h-screen items-center justify-center bg-[var(--bg-main)] text-[var(--text-primary)]">Loading...</div>;
   }
 
   if (!user) {
@@ -262,7 +262,7 @@ const App = () => {
   }
 
   return (
-    <div className="h-screen bg-slate-100 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="h-screen bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors">
       <div className="flex h-full flex-col md:grid md:grid-cols-[290px_1fr]">
         <div className="h-[40vh] min-h-[280px] md:h-full">
           <Sidebar
@@ -277,11 +277,11 @@ const App = () => {
           />
         </div>
 
-        <main className="relative flex h-[60vh] min-h-[320px] flex-col border-t border-slate-200 bg-slate-50/85 md:h-full md:border-t-0 dark:border-slate-800/50 dark:bg-slate-950/85">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 md:px-6 dark:border-slate-800/70">
+        <main className="relative flex h-[60vh] min-h-[320px] flex-col border-t border-[var(--bg-divider)] md:h-full md:border-t-0">
+          <div className="flex items-center justify-between border-b border-[var(--bg-divider)] px-4 py-3 md:px-6">
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-500">GlucoGuide AI</p>
-              <p className="text-sm text-slate-600 dark:text-slate-300">Chat + blood sugar analytics</p>
+              <p className="text-xs uppercase tracking-wider text-[var(--text-muted)]">GlucoGuide AI</p>
+              <p className="text-sm text-[var(--text-primary)]">Chat + blood sugar analytics</p>
             </div>
             <ThemeToggle darkMode={darkMode} onToggle={() => setDarkMode((prev) => !prev)} />
           </div>
@@ -292,7 +292,7 @@ const App = () => {
 
           {activeView === "chat" ? (
             historyLoading ? (
-              <div className="flex flex-1 items-center justify-center text-slate-500 dark:text-slate-400">Loading chat...</div>
+              <div className="flex flex-1 items-center justify-center text-[var(--text-muted)]">Loading chat...</div>
             ) : (
               <ChatWindow
                 messages={messages}
@@ -302,7 +302,7 @@ const App = () => {
               />
             )
           ) : analyticsLoading && !analytics ? (
-            <div className="flex flex-1 items-center justify-center text-slate-500 dark:text-slate-400">Loading dashboard...</div>
+            <div className="flex flex-1 items-center justify-center text-[var(--text-muted)]">Loading dashboard...</div>
           ) : (
             <Dashboard analytics={analytics} onAddReading={handleAddReading} addingReading={addingReading} />
           )}

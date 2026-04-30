@@ -5,6 +5,37 @@
 @tailwind utilities;
 
 :root {
+  --bg-sidebar:       #0f1117;
+  --bg-main:          #161920;
+  --bg-input:         #1e222b;
+  --bg-hover:         #252a36;
+  --bg-bubble-bot:    #1e222b;
+  --bg-bubble-user:   #3b5bdb;
+  --bg-divider:       #2a2f3d;
+
+  --text-primary:     #e8eaed;
+  --text-muted:       #8b929e;
+  --text-placeholder: #565d6b;
+
+  --accent:           #3b5bdb;
+  --accent-light:     #5c7cfa;
+  --accent-contrast:   #ffffff;
+  --border-radius:    14px;
+  --font-size-body:   13px;
+  color-scheme: dark;
+}
+
+html:not(.dark) {
+  --bg-sidebar: #f3f4f6;
+  --bg-main: #ffffff;
+  --bg-input: #f8fafc;
+  --bg-hover: #e5e7eb;
+  --bg-divider: #d1d5db;
+  --text-primary: #111827;
+  --text-muted: #6b7280;
+  --text-placeholder: #9ca3af;
+  --accent: #111827;
+  --accent-contrast: #ffffff;
   color-scheme: light;
 }
 
@@ -12,18 +43,93 @@ html.dark {
   color-scheme: dark;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: "Space Grotesk", system-ui, sans-serif;
-  background: radial-gradient(circle at top, rgba(8, 145, 178, 0.08), transparent 45%), #f8fafc;
-}
-
-html.dark body {
-  background: radial-gradient(circle at top, rgba(8, 145, 178, 0.18), transparent 40%), #020617;
+  font-size: var(--font-size-body);
+  background: var(--bg-main);
+  color: var(--text-primary);
 }
 
 * {
   box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
+.app-sidebar {
+  background: var(--bg-sidebar);
+}
+
+.app-main {
+  background: var(--bg-main);
+}
+
+.app-divider {
+  border-color: var(--bg-divider) !important;
+}
+
+.app-card {
+  border: 1px solid var(--bg-divider);
+  background: var(--bg-input);
+  border-radius: var(--border-radius);
+}
+
+.app-input {
+  border: 1px solid var(--bg-divider);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border-radius: var(--border-radius);
+}
+
+.app-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.app-button {
+  border: 1px solid var(--bg-divider);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border-radius: var(--border-radius);
+}
+
+.app-button:hover {
+  background: var(--bg-hover);
+}
+
+.app-button-primary {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-radius: var(--border-radius);
+}
+
+.app-button-primary:hover {
+  filter: brightness(0.92);
+}
+
+.app-text-muted {
+  color: var(--text-muted);
+}
+
+.app-text-primary {
+  color: var(--text-primary);
 }
 
 ::-webkit-scrollbar {

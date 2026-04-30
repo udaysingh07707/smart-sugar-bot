@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 const SugarReading = require("../models/SugarReading");
 
+const toUtcDateKey = (value) => new Date(value).toISOString().slice(0, 10);
+
 const getAnalytics = async (req, res, next) => {
   try {
     const now = new Date();
-    const sevenDaysAgo = new Date(now);
-    sevenDaysAgo.setDate(now.getDate() - 6);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
+    const startOfTodayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    const sevenDaysAgo = new Date(startOfTodayUtc);
+    sevenDaysAgo.setUTCDate(startOfTodayUtc.getUTCDate() - 6);
 
     // Fetch the last 7 days of readings for trend visualization.
     const recentReadings = await SugarReading.find({
@@ -20,13 +22,13 @@ const getAnalytics = async (req, res, next) => {
     const dailyMap = {};
     for (let i = 0; i < 7; i += 1) {
       const date = new Date(sevenDaysAgo);
-      date.setDate(sevenDaysAgo.getDate() + i);
-      const key = date.toISOString().slice(0, 10);
+      date.setUTCDate(sevenDaysAgo.getUTCDate() + i);
+      const key = toUtcDateKey(date);
       dailyMap[key] = [];
     }
 
     recentReadings.forEach((reading) => {
-      const key = new Date(reading.recordedAt).toISOString().slice(0, 10);
+      const key = toUtcDateKey(reading.recordedAt);
       if (dailyMap[key]) {
         dailyMap[key].push(reading.value);
       }

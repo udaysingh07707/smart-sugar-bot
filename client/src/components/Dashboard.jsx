@@ -13,8 +13,12 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
     event.preventDefault();
 
     const numericValue = Number(value);
-    if (!numericValue || Number.isNaN(numericValue)) {
+    if (!Number.isFinite(numericValue)) {
       setError("Enter a valid sugar value.");
+      return;
+    }
+    if (numericValue < 20 || numericValue > 600) {
+      setError("Value should be between 20 and 600 mg/dL.");
       return;
     }
 
@@ -28,6 +32,8 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
     setRecordedAt("");
   };
 
+  const hasTrendData = (analytics?.last7Days || []).some((item) => Number.isFinite(item.average));
+
   const chartData = useMemo(() => {
     const labels = (analytics?.last7Days || []).map((item) =>
       new Date(item.date).toLocaleDateString(undefined, { weekday: "short" })
@@ -38,12 +44,13 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
       datasets: [
         {
           label: "Avg sugar (mg/dL)",
-          data: (analytics?.last7Days || []).map((item) => item.average),
-          borderColor: "#22d3ee",
-          backgroundColor: "rgba(34, 211, 238, 0.2)",
+          data: (analytics?.last7Days || []).map((item) => (Number.isFinite(item.average) ? item.average : null)),
+          borderColor: "#ffffff",
+          backgroundColor: "rgba(255, 255, 255, 0.18)",
           tension: 0.35,
           pointRadius: 4,
-          pointHoverRadius: 5
+          pointHoverRadius: 5,
+          spanGaps: true
         }
       ]
     };
@@ -54,77 +61,83 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: { color: "#cbd5e1" }
+        labels: { color: "#ececec" }
       }
     },
     scales: {
       x: {
-        ticks: { color: "#94a3b8" },
-        grid: { color: "rgba(71, 85, 105, 0.25)" }
+        ticks: { color: "#8a8a8a" },
+        grid: { color: "rgba(138, 138, 138, 0.2)" }
       },
       y: {
-        ticks: { color: "#94a3b8" },
-        grid: { color: "rgba(71, 85, 105, 0.25)" }
+        ticks: { color: "#8a8a8a" },
+        grid: { color: "rgba(138, 138, 138, 0.2)" }
       }
     }
   };
 
   return (
-    <section className="h-full overflow-y-auto p-4 md:p-6">
+    <section className="h-full overflow-y-auto bg-[var(--bg-main)] p-4 md:p-6">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <div className="grid gap-4 md:grid-cols-3">
-          <article className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-900/70">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Average sugar</p>
-            <p className="mt-1 text-3xl font-semibold text-slate-800 dark:text-slate-100">
+          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+            <p className="text-sm text-[var(--text-muted)]">Average sugar</p>
+            <p className="mt-1 text-3xl font-semibold text-[var(--text-primary)]">
               {analytics?.averageSugarLevel ?? "--"}
-              <span className="ml-2 text-sm font-normal text-slate-500 dark:text-slate-400">mg/dL</span>
+              <span className="ml-2 text-sm font-normal text-[var(--text-muted)]">mg/dL</span>
             </p>
           </article>
 
-          <article className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-900/70">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Total readings</p>
-            <p className="mt-1 text-3xl font-semibold text-slate-800 dark:text-slate-100">{analytics?.totalReadings ?? 0}</p>
+          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+            <p className="text-sm text-[var(--text-muted)]">Total readings</p>
+            <p className="mt-1 text-3xl font-semibold text-[var(--text-primary)]">{analytics?.totalReadings ?? 0}</p>
           </article>
 
-          <article className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-900/70">
-            <p className="text-sm text-slate-500 dark:text-slate-400">Last 7 days</p>
-            <p className="mt-1 text-3xl font-semibold text-slate-800 dark:text-slate-100">
+          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+            <p className="text-sm text-[var(--text-muted)]">Last 7 days</p>
+            <p className="mt-1 text-3xl font-semibold text-[var(--text-primary)]">
               {(analytics?.last7Days || []).reduce((acc, item) => acc + item.count, 0)}
             </p>
           </article>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-900/70">
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">7-day trend</h3>
+        <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+          <h3 className="text-lg font-semibold text-[var(--text-primary)]">7-day trend</h3>
           <div className="mt-4 h-72">
-            <Line data={chartData} options={chartOptions} />
+            {hasTrendData ? (
+              <Line data={chartData} options={chartOptions} />
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
+                No chart points yet. Add a reading to start the trend graph.
+              </div>
+            )}
           </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-5">
-          <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-900/70 lg:col-span-2">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Add reading</h3>
+          <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5 lg:col-span-2">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Add reading</h3>
             <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
               <label className="block">
-                <span className="mb-1 block text-sm text-slate-600 dark:text-slate-300">Sugar value (mg/dL)</span>
+                <span className="mb-1 block text-sm text-[var(--text-muted)]">Sugar value (mg/dL)</span>
                 <input
                   type="number"
                   min="20"
                   max="600"
                   value={value}
                   onChange={(event) => setValue(event.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-800 outline-none transition focus:border-brand-400 dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-100"
+                  className="w-full rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-main)] px-3 py-2.5 text-base text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-placeholder)] focus:border-[var(--accent)]"
                   placeholder="e.g. 140"
                 />
               </label>
 
               <label className="block">
-                <span className="mb-1 block text-sm text-slate-600 dark:text-slate-300">Date & time (optional)</span>
+                <span className="mb-1 block text-sm text-[var(--text-muted)]">Date & time (optional)</span>
                 <input
                   type="datetime-local"
                   value={recordedAt}
                   onChange={(event) => setRecordedAt(event.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-800 outline-none transition focus:border-brand-400 dark:border-slate-700 dark:bg-slate-950/80 dark:text-slate-100"
+                  className="w-full rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-main)] px-3 py-2.5 text-base text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)]"
                 />
               </label>
 
@@ -133,15 +146,15 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
               <button
                 type="submit"
                 disabled={addingReading}
-                className="w-full rounded-xl bg-brand-500 px-4 py-2.5 font-semibold text-slate-950 transition hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl bg-[var(--accent)] px-4 py-2.5 font-semibold text-[var(--accent-contrast)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {addingReading ? "Saving..." : "Save reading"}
               </button>
             </form>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 dark:border-slate-800 dark:bg-slate-900/70 lg:col-span-3">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Recent readings</h3>
+          <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5 lg:col-span-3">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Recent readings</h3>
             <div className="mt-4 space-y-2">
               {(analytics?.recentReadings || [])
                 .slice()
@@ -150,12 +163,12 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 dark:border-slate-800"
+                    className="flex items-center justify-between rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-main)] px-3 py-2"
                   >
-                    <p className="font-mono text-sm text-slate-800 dark:text-slate-100">
+                    <p className="font-mono text-sm text-[var(--text-primary)]">
                       {item.value} {item.unit}
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-500">
+                    <p className="text-xs text-[var(--text-muted)]">
                       {new Date(item.recordedAt).toLocaleString(undefined, {
                         month: "short",
                         day: "numeric",
@@ -167,7 +180,7 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
                 ))}
 
               {!analytics?.recentReadings?.length ? (
-                <p className="text-sm text-slate-500 dark:text-slate-500">No readings yet. Add one or share it in chat.</p>
+                <p className="text-sm text-[var(--text-muted)]">No readings yet. Add one or share it in chat.</p>
               ) : null}
             </div>
           </div>

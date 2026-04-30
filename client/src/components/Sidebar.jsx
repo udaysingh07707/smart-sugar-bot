@@ -9,32 +9,35 @@ const formatSessionDate = (value) => {
 };
 
 const Sidebar = ({ sessions, activeSessionId, onSelectSession, onNewChat, onLogout, user, activeView, onViewChange }) => (
-  <aside className="flex h-full w-full flex-col border-r border-slate-200 bg-slate-100/90 backdrop-blur dark:border-slate-800/60 dark:bg-slate-950/70">
-    <div className="border-b border-slate-200 p-4 dark:border-slate-800/80">
+  <aside className="flex h-full w-full flex-col bg-[var(--bg-sidebar)] border-r border-[var(--bg-divider)]">
+    <div className="border-b border-[var(--bg-divider)] p-4">
       <button
+        type="button"
         onClick={onNewChat}
-        className="w-full rounded-xl border border-brand-400/30 bg-brand-500/15 px-4 py-2 text-sm font-medium text-brand-200 transition hover:bg-brand-500/25"
+        className="w-full rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--accent-contrast)] transition hover:opacity-90"
       >
         + New chat
       </button>
     </div>
 
-    <div className="flex gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800/80">
+    <div className="flex gap-2 border-b border-[var(--bg-divider)] px-4 py-3">
       <button
+        type="button"
         className={`flex-1 rounded-lg px-3 py-2 text-sm transition ${
           activeView === "chat"
-            ? "bg-slate-800 text-slate-100 dark:bg-slate-800 dark:text-slate-100"
-            : "text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-900"
+            ? "bg-[var(--bg-input)] text-[var(--text-primary)]"
+            : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)]"
         }`}
         onClick={() => onViewChange("chat")}
       >
         Chat
       </button>
       <button
+        type="button"
         className={`flex-1 rounded-lg px-3 py-2 text-sm transition ${
           activeView === "dashboard"
-            ? "bg-slate-800 text-slate-100 dark:bg-slate-800 dark:text-slate-100"
-            : "text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-900"
+            ? "bg-[var(--bg-input)] text-[var(--text-primary)]"
+            : "text-[var(--text-muted)] hover:bg-[var(--bg-hover)]"
         }`}
         onClick={() => onViewChange("dashboard")}
       >
@@ -43,34 +46,36 @@ const Sidebar = ({ sessions, activeSessionId, onSelectSession, onNewChat, onLogo
     </div>
 
     <div className="flex-1 overflow-y-auto p-3">
-      <p className="px-2 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-500">Chat history</p>
+      <p className="px-2 text-xs uppercase tracking-wider text-[var(--text-muted)]">Chat history</p>
       <div className="mt-2 space-y-2">
         {sessions.map((session) => (
           <button
+            type="button"
             key={session.id}
             onClick={() => onSelectSession(session.id)}
             className={`w-full rounded-xl px-3 py-2 text-left transition ${
               activeSessionId === session.id
-                ? "border border-brand-400/40 bg-brand-500/10"
-                : "border border-transparent hover:border-slate-300 hover:bg-slate-200 dark:hover:border-slate-800 dark:hover:bg-slate-900/60"
+                ? "bg-[var(--bg-bubble-user)] text-[var(--accent-contrast)]"
+                : "border border-transparent hover:border-[var(--bg-divider)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)]"
             }`}
           >
-            <p className="truncate text-sm font-medium text-slate-800 dark:text-slate-100">{session.title}</p>
-            <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{session.lastMessagePreview || "No messages yet"}</p>
-            <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-500">{formatSessionDate(session.lastMessageAt)}</p>
+            <p className="truncate text-sm font-medium text-[var(--text-primary)]">{session.title}</p>
+            <p className="mt-1 truncate text-xs text-[var(--text-muted)]">{session.lastMessagePreview || "No messages yet"}</p>
+            <p className="mt-1 text-[11px] text-[var(--text-muted)]">{formatSessionDate(session.lastMessageAt)}</p>
           </button>
         ))}
 
-        {!sessions.length ? <p className="px-2 pt-2 text-xs text-slate-500 dark:text-slate-500">No previous chats yet.</p> : null}
+        {!sessions.length ? <p className="px-2 pt-2 text-xs text-[var(--text-muted)]">No previous chats yet.</p> : null}
       </div>
     </div>
 
-    <div className="border-t border-slate-200 p-4 dark:border-slate-800/80">
-      <p className="truncate text-sm text-slate-700 dark:text-slate-200">{user?.name}</p>
-      <p className="truncate text-xs text-slate-500 dark:text-slate-500">{user?.email}</p>
+    <div className="border-t border-[var(--bg-divider)] p-4">
+      <p className="truncate text-sm text-[var(--text-primary)]">{user?.name}</p>
+      <p className="truncate text-xs text-[var(--text-muted)]">{user?.email}</p>
       <button
+        type="button"
         onClick={onLogout}
-        className="mt-3 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-200 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+        className="mt-3 w-full rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] px-3 py-2 text-sm text-[var(--text-primary)] transition hover:bg-[var(--bg-hover)]"
       >
         Logout
       </button>
