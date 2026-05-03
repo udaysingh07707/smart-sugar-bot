@@ -77,33 +77,33 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
   };
 
   return (
-    <section className="h-full overflow-y-auto bg-[var(--bg-main)] p-4 md:p-6">
+    <section className="h-full overflow-y-auto bg-[var(--bg-main)] p-3 md:p-6">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <div className="grid gap-4 md:grid-cols-3">
-          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-4 md:p-5">
             <p className="text-sm text-[var(--text-muted)]">Average sugar</p>
-            <p className="mt-1 text-3xl font-semibold text-[var(--text-primary)]">
+            <p className="mt-1 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">
               {analytics?.averageSugarLevel ?? "--"}
               <span className="ml-2 text-sm font-normal text-[var(--text-muted)]">mg/dL</span>
             </p>
           </article>
 
-          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-4 md:p-5">
             <p className="text-sm text-[var(--text-muted)]">Total readings</p>
-            <p className="mt-1 text-3xl font-semibold text-[var(--text-primary)]">{analytics?.totalReadings ?? 0}</p>
+            <p className="mt-1 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">{analytics?.totalReadings ?? 0}</p>
           </article>
 
-          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+          <article className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-4 md:p-5">
             <p className="text-sm text-[var(--text-muted)]">Last 7 days</p>
-            <p className="mt-1 text-3xl font-semibold text-[var(--text-primary)]">
+            <p className="mt-1 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">
               {(analytics?.last7Days || []).reduce((acc, item) => acc + item.count, 0)}
             </p>
           </article>
         </div>
 
-        <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5">
+        <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-4 md:p-5">
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">7-day trend</h3>
-          <div className="mt-4 h-72">
+          <div className="mt-4 h-64 md:h-72">
             {hasTrendData ? (
               <Line data={chartData} options={chartOptions} />
             ) : (
@@ -115,7 +115,7 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-5">
-          <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5 lg:col-span-2">
+          <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-4 md:p-5 lg:col-span-2">
             <h3 className="text-lg font-semibold text-[var(--text-primary)]">Add reading</h3>
             <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
               <label className="block">
@@ -153,7 +153,7 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
             </form>
           </div>
 
-          <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5 lg:col-span-3">
+          <div className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-4 md:p-5 lg:col-span-3">
             <h3 className="text-lg font-semibold text-[var(--text-primary)]">Recent readings</h3>
             <div className="mt-4 space-y-2">
               {(analytics?.recentReadings || [])
@@ -163,12 +163,12 @@ const Dashboard = ({ analytics, onAddReading, addingReading }) => {
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-main)] px-3 py-2"
+                    className="flex flex-col items-start gap-1 rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-main)] px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <p className="font-mono text-sm text-[var(--text-primary)]">
                       {item.value} {item.unit}
                     </p>
-                    <p className="text-xs text-[var(--text-muted)]">
+                    <p className="text-xs text-[var(--text-muted)] sm:text-right">
                       {new Date(item.recordedAt).toLocaleString(undefined, {
                         month: "short",
                         day: "numeric",

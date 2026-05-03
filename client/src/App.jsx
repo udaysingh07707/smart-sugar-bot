@@ -28,6 +28,7 @@ const App = () => {
   const [analytics, setAnalytics] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [addingReading, setAddingReading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("gluco-theme");
@@ -68,6 +69,7 @@ const App = () => {
       setActiveSessionId(sessionId);
       setMessages(data.messages || []);
       setActiveView("chat");
+      setSidebarOpen(false);
     } catch (error) {
       setAppError(error.message);
     } finally {
@@ -191,6 +193,7 @@ const App = () => {
     setActiveSessionId("");
     setMessages([]);
     setActiveView("chat");
+    setSidebarOpen(false);
   };
 
   const handleLogout = () => {
@@ -229,6 +232,11 @@ const App = () => {
     openAuthDialog("login");
   };
 
+  const handleMobileViewChange = (view) => {
+    setActiveView(view);
+    setSidebarOpen(false);
+  };
+
   if (loadingAuth) {
     return <div className="flex min-h-screen items-center justify-center bg-[var(--bg-main)] text-[var(--text-primary)]">Loading...</div>;
   }
@@ -262,9 +270,9 @@ const App = () => {
   }
 
   return (
-    <div className="h-screen bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors">
-      <div className="flex h-full flex-col md:grid md:grid-cols-[290px_1fr]">
-        <div className="h-[40vh] min-h-[280px] md:h-full">
+    <div className="h-screen overflow-hidden bg-[var(--bg-main)] text-[var(--text-primary)] transition-colors">
+      <div className="flex h-full md:grid md:grid-cols-[290px_1fr]">
+        <div className="hidden h-full md:block">
           <Sidebar
             sessions={sessions}
             activeSessionId={activeSessionId}
@@ -277,13 +285,70 @@ const App = () => {
           />
         </div>
 
-        <main className="relative flex h-[60vh] min-h-[320px] flex-col border-t border-[var(--bg-divider)] md:h-full md:border-t-0">
-          <div className="flex items-center justify-between border-b border-[var(--bg-divider)] px-4 py-3 md:px-6">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-[var(--text-muted)]">GlucoGuide AI</p>
-              <p className="text-sm text-[var(--text-primary)]">Chat + blood sugar analytics</p>
+        {sidebarOpen ? (
+          <div className="fixed inset-0 z-40 md:hidden">
+            <button
+              type="button"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Close navigation"
+            />
+            <div className="relative h-full w-[86vw] max-w-sm">
+              <Sidebar
+                sessions={sessions}
+                activeSessionId={activeSessionId}
+                onSelectSession={loadSessionMessages}
+                onNewChat={handleNewChat}
+                onLogout={handleLogout}
+                user={user}
+                activeView={activeView}
+                onViewChange={handleMobileViewChange}
+                onClose={() => setSidebarOpen(false)}
+                mobile
+              />
             </div>
-            <ThemeToggle darkMode={darkMode} onToggle={() => setDarkMode((prev) => !prev)} />
+          </div>
+        ) : null}
+
+        <main className="relative flex h-full min-w-0 flex-1 flex-col">
+          <div className="flex items-center justify-between border-b border-[var(--bg-divider)] px-4 py-3 md:px-6">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(true)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] text-lg text-[var(--text-primary)] transition hover:bg-[var(--bg-hover)] md:hidden"
+                aria-label="Open navigation"
+              >
+                ☰
+              </button>
+              <div>
+                <p className="text-xs uppercase tracking-wider text-[var(--text-muted)]">GlucoGuide AI</p>
+                <p className="text-sm text-[var(--text-primary)]">Chat + blood sugar analytics</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-1 md:hidden">
+                <button
+                  type="button"
+                  onClick={() => setActiveView("chat")}
+                  className={`rounded-lg px-3 py-1.5 text-xs transition ${
+                    activeView === "chat" ? "bg-[var(--accent)] text-[var(--accent-contrast)]" : "text-[var(--text-muted)]"
+                  }`}
+                >
+                  Chat
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveView("dashboard")}
+                  className={`rounded-lg px-3 py-1.5 text-xs transition ${
+                    activeView === "dashboard" ? "bg-[var(--accent)] text-[var(--accent-contrast)]" : "text-[var(--text-muted)]"
+                  }`}
+                >
+                  Stats
+                </button>
+              </div>
+              <ThemeToggle darkMode={darkMode} onToggle={() => setDarkMode((prev) => !prev)} />
+            </div>
           </div>
 
           {appError ? (

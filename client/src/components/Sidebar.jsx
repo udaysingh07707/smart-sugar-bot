@@ -8,9 +8,35 @@ const formatSessionDate = (value) => {
   });
 };
 
-const Sidebar = ({ sessions, activeSessionId, onSelectSession, onNewChat, onLogout, user, activeView, onViewChange }) => (
-  <aside className="flex h-full w-full flex-col bg-[var(--bg-sidebar)] border-r border-[var(--bg-divider)]">
+const Sidebar = ({
+  sessions,
+  activeSessionId,
+  onSelectSession,
+  onNewChat,
+  onLogout,
+  user,
+  activeView,
+  onViewChange,
+  onClose,
+  mobile = false
+}) => (
+  <aside className="flex h-full w-full flex-col border-r border-[var(--bg-divider)] bg-[var(--bg-sidebar)]">
     <div className="border-b border-[var(--bg-divider)] p-4">
+      <div className="mb-3 flex items-center justify-between md:hidden">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">Workspace</p>
+          <p className="text-sm font-medium text-[var(--text-primary)]">Chats and progress</p>
+        </div>
+        {mobile ? (
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-[var(--bg-divider)] bg-[var(--bg-input)] px-3 py-2 text-xs text-[var(--text-primary)] transition hover:bg-[var(--bg-hover)]"
+          >
+            Close
+          </button>
+        ) : null}
+      </div>
       <button
         type="button"
         onClick={onNewChat}
@@ -59,7 +85,9 @@ const Sidebar = ({ sessions, activeSessionId, onSelectSession, onNewChat, onLogo
                 : "border border-transparent hover:border-[var(--bg-divider)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)]"
             }`}
           >
-            <p className="truncate text-sm font-medium text-[var(--text-primary)]">{session.title}</p>
+            <p className={`truncate text-sm font-medium ${activeSessionId === session.id ? "text-[var(--accent-contrast)]" : "text-[var(--text-primary)]"}`}>
+              {session.title}
+            </p>
             <p className="mt-1 truncate text-xs text-[var(--text-muted)]">{session.lastMessagePreview || "No messages yet"}</p>
             <p className="mt-1 text-[11px] text-[var(--text-muted)]">{formatSessionDate(session.lastMessageAt)}</p>
           </button>
