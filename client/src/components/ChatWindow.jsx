@@ -13,12 +13,12 @@ const ChatWindow = ({ messages, onSend, loading, title }) => {
   };
 
   return (
-    <section className="flex h-full flex-col bg-[var(--bg-main)] text-[var(--text-primary)]">
+    <section className="flex min-h-0 flex-1 flex-col bg-[var(--bg-main)] text-[var(--text-primary)]">
       <header className="border-b border-[var(--bg-divider)] px-4 py-4 md:px-6">
         <h2 className="truncate text-base font-semibold md:text-lg">{title || "New chat"}</h2>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-3 py-4 md:px-8 md:py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4 md:px-8 md:py-6">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           {!messages.length ? (
             <div className="rounded-2xl border border-[var(--bg-divider)] bg-[var(--bg-input)] p-5 text-center md:p-6">

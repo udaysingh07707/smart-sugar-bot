@@ -310,7 +310,7 @@ const App = () => {
           </div>
         ) : null}
 
-        <main className="relative flex h-full min-w-0 flex-1 flex-col">
+        <main className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <div className="flex items-center justify-between border-b border-[var(--bg-divider)] px-4 py-3 md:px-6">
             <div className="flex items-center gap-3">
               <button
@@ -355,22 +355,24 @@ const App = () => {
             <div className="border-b border-rose-500/20 bg-rose-500/10 px-4 py-2 text-sm text-rose-200">{appError}</div>
           ) : null}
 
-          {activeView === "chat" ? (
-            historyLoading ? (
-              <div className="flex flex-1 items-center justify-center text-[var(--text-muted)]">Loading chat...</div>
+          <div className="flex min-h-0 flex-1">
+            {activeView === "chat" ? (
+              historyLoading ? (
+                <div className="flex h-full w-full items-center justify-center text-[var(--text-muted)]">Loading chat...</div>
+              ) : (
+                <ChatWindow
+                  messages={messages}
+                  onSend={handleSendMessage}
+                  loading={chatLoading}
+                  title={activeSessionTitle}
+                />
+              )
+            ) : analyticsLoading && !analytics ? (
+              <div className="flex h-full w-full items-center justify-center text-[var(--text-muted)]">Loading dashboard...</div>
             ) : (
-              <ChatWindow
-                messages={messages}
-                onSend={handleSendMessage}
-                loading={chatLoading}
-                title={activeSessionTitle}
-              />
-            )
-          ) : analyticsLoading && !analytics ? (
-            <div className="flex flex-1 items-center justify-center text-[var(--text-muted)]">Loading dashboard...</div>
-          ) : (
-            <Dashboard analytics={analytics} onAddReading={handleAddReading} addingReading={addingReading} />
-          )}
+              <Dashboard analytics={analytics} onAddReading={handleAddReading} addingReading={addingReading} />
+            )}
+          </div>
         </main>
       </div>
     </div>
